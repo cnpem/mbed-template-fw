@@ -13,9 +13,25 @@ add_subdirectory(newboot)
 
 project(mbed-template-fw C CXX ASM)
 
+# File containing version information
+set(VERSION_INFO_HEADER
+    "${CMAKE_CURRENT_SOURCE_DIR}/app/version_info.h"
+)
+# Updates information during every build, without configuring CMake again
+add_custom_target(update_build_info ALL
+    COMMAND "${CMAKE_COMMAND}"
+        "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+        "-DOUTPUT_FILE=${VERSION_INFO_HEADER}"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/update_version_info.cmake"
+    BYPRODUCTS "${VERSION_INFO_HEADER}"
+    VERBATIM
+)
+
 include_directories(${APP_HDRS} ${LIB_HDRS} ${MODULES_HDRS})
 
-add_executable(${PROJECT_NAME} ${APP_SRCS} ${LIB_SRCS} ${MODULES_SRCS})
+add_executable(${PROJECT_NAME} ${APP_SRCS} ${LIB_SRCS} ${MODULES_SRCS}
+"${VERSION_INFO_HEADER}")
+
 target_link_libraries(${PROJECT_NAME} mbed-os mbed-netsocket)
 mbed_set_post_build(${PROJECT_NAME})
 

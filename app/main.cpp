@@ -43,7 +43,7 @@ int main() {
   rtos::Queue<CtrlIntfModuleMessage, 1> queue;
   EthernetInterface net;
 
-  CtrlCoreModule ctrl_core_mod(
+  CtrlCoreModule ctrl_core_mod(32,
       callback(&queue, &rtos::Queue<CtrlIntfModuleMessage, 1>::try_get_for),
       osPriorityNormal, CTRLCOREMODULE_STACK_SIZE, ctrl_core_mod_stack,
       "ctrl_core_mod_task");

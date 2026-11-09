@@ -42,22 +42,23 @@ int main() {
   nsapi_error_t nsapi_status;
   rtos::Queue<CtrlIntfModuleMessage, 1> queue;
   EthernetInterface net;
+  const uint8_t max_cmd_len = 32;
 
-  CtrlCoreModule ctrl_core_mod(
+  CtrlCoreModule ctrl_core_mod(max_cmd_len,
       callback(&queue, &rtos::Queue<CtrlIntfModuleMessage, 1>::try_get_for),
       osPriorityNormal, CTRLCOREMODULE_STACK_SIZE, ctrl_core_mod_stack,
       "ctrl_core_mod_task");
   TCPCtrlIntfModule tcp_ctrl_intf_mod(
-      &net, 3001, 30000, '\n', 32,
+      &net, 3001, 30000, '\n', max_cmd_len,
       callback(&queue, &rtos::Queue<CtrlIntfModuleMessage, 1>::try_put_for),
       osPriorityNormal, TCPCTRLINTFMODULE_STACK_SIZE, tcp_ctrl_intf_mod_stack,
       "tcp_ctrl_intf_mod_task");
   TCPFwUpdateModule tcp_fw_update_mod(
-      &net, 9000, 50000, '\n', 32,
+      &net, 9000, 50000, '\n', max_cmd_len,
       osPriorityNormal, TCPFWUPDATEMODULE_THREAD_STACK_SIZE,
       tcp_fw_update_mod_stack, "tcp_fw_update_mod_task");
   UARTCtrlIntfModule uart_ctrl_intf_mod(
-      USBTX, USBRX, 115200, '\n', 32,
+      USBTX, USBRX, 115200, '\n', max_cmd_len,
       callback(&queue, &rtos::Queue<CtrlIntfModuleMessage, 1>::try_put_for),
       osPriorityNormal, UARTCTRLINTFMODULE_STACK_SIZE, uart_ctrl_intf_mod_stack,
       "uart_ctrl_intf_mod_task");

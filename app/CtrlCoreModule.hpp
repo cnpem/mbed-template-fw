@@ -14,7 +14,7 @@
 class CtrlCoreModule :
   public Module {
     public:
-      CtrlCoreModule(
+      CtrlCoreModule(const uint8_t max_cmd_len,
           mbed::Callback<bool(Kernel::Clock::duration_u32,
             CtrlIntfModuleMessage**)> try_get_for_cb,
           /* Module params */
@@ -24,6 +24,7 @@ class CtrlCoreModule :
 
     private:
       uint32_t _count;
+      uint8_t _buffer_capacity;
       mbed::Callback<bool(Kernel::Clock::duration_u32, CtrlIntfModuleMessage**)>
         _try_get_for_cb;
 
